@@ -3,6 +3,7 @@ from settings import *
 from player import Player
 from obstacle import Obstacle
 from score import load_high_score, save_high_score
+from menu import MainMenu
 
 pygame.init()
 pygame.font.init()
@@ -13,20 +14,28 @@ clock = pygame.time.Clock()
 
 def draw_text(surface, text, size, x, y, color=(255, 255, 255)):
     font = pygame.font.SysFont(None, size)
-    text_surface = font.render(text, True, color)
-    surface.blit(text_surface, (x, y))
+    surface.blit(font.render(text, True, color), (x, y))
 
-def calc_speed(score):
-    # Tăng cấp số nhân: speed = 5 * 1.0008^score
-    return 5 * (1.0008 ** score)
+def calc_speed(score, diff_mult):
+    return 5 * diff_mult * (1.0008 ** score)
 
 def calc_spawn_delay(score):
-    # Giảm dần tối thiểu 400ms
     return max(400, int(1500 * (0.9992 ** score)))
 
 def reset_game():
     return Player(), [], 0, 0, 1500, set()
 
+# --- Main Menu ---
+menu = MainMenu(screen)
+result = menu.run()
+if result == "quit":
+    pygame.quit()
+    exit()
+
+settings = menu.get_settings()
+DIFF_MULT = {0: 0.7, 1: 1.0, 2: 1.4}[settings["difficulty"]]
+
+# --- Game ---
 high_score = load_high_score()
 player, obstacles, score, score_timer, spawn_delay, passed_obs = reset_game()
 spawn_timer = 0
@@ -39,7 +48,6 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-
         if event.type == pygame.KEYDOWN:
             if not game_over and event.key == pygame.K_SPACE:
                 player.jump()
@@ -48,17 +56,27 @@ while running:
                 player, obstacles, score, score_timer, spawn_delay, passed_obs = reset_game()
                 spawn_timer = 0
                 game_over = False
+            # Về menu
+            if event.key == pygame.K_ESCAPE:
+                high_score = save_high_score(score)
+                result = menu.run()
+                if result == "quit":
+                    running = False
+                else:
+                    settings = menu.get_settings()
+                    DIFF_MULT = {0: 0.7, 1: 1.0, 2: 1.4}[settings["difficulty"]]
+                    player, obstacles, score, score_timer, spawn_delay, passed_obs = reset_game()
+                    spawn_timer = 0
+                    game_over = False
 
     if not game_over:
-        # Score theo thời gian
         score_timer += dt
         if score_timer >= 100:
             score += 1
             score_timer = 0
 
-        # Spawn delay và speed tính từ score
         spawn_delay = calc_spawn_delay(score)
-        current_speed = calc_speed(score)
+        current_speed = calc_speed(score, DIFF_MULT)
 
         spawn_timer += dt
         if spawn_timer >= spawn_delay:
@@ -71,7 +89,6 @@ while running:
             obstacle.speed = current_speed
             obstacle.update()
 
-        # Thưởng +10 vượt obstacle
         for obstacle in obstacles:
             obs_id = id(obstacle)
             if obs_id not in passed_obs:
@@ -101,6 +118,7 @@ while running:
         draw_text(screen, f"SCORE: {score}", 50, 300, 310)
         draw_text(screen, f"BEST:  {high_score}", 50, 300, 360, (200, 200, 100))
         draw_text(screen, "Press R to restart", 35, 270, 420, (180, 180, 180))
+        draw_text(screen, "Press ESC for menu", 35, 270, 460, (180, 180, 180))
 
     pygame.display.update()
 
