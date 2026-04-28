@@ -1,0 +1,18 @@
+# Window settings
+WIDTH = 800
+HEIGHT = 600
+FPS = 60
+
+# Colors
+BACKGROUND_COLOR = (20, 20, 30)
+PLAYER_COLOR = (255, 255, 255)
+
+# Player settings
+PLAYER_X = 150
+PLAYER_Y = 250
+
+PLAYER_WIDTH = 50
+PLAYER_HEIGHT = 50
+
+GRAVITY = 0.5
+JUMP_STRENGTH = -10
