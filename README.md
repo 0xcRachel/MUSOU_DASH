@@ -144,3 +144,6 @@ This project was created to:
 
 This project is for educational purposes, made by 0xcRachel
 
+## Contributors
+![Contributors](https://img.shields.io/github/contributors/0xcRachel/MUSOU_DASH)
+
