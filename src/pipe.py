@@ -14,7 +14,7 @@ class Pipe:
         if Pipe.PIPE_IMG_TOP is None:
             base_path = os.path.join(os.path.dirname(__file__), "..", "assets", "images", "obstacles")
             try:
-                original_img = pygame.image.load(os.path.join(base_path, "prs_000.png")).convert_alpha()
+                original_img = pygame.image.load(os.path.join(base_path, "pipe-green.png")).convert_alpha()
                 aspect_ratio = original_img.get_height() / original_img.get_width()
                 scaled_width = PIPE_WIDTH
                 scaled_height = int(scaled_width * aspect_ratio)
@@ -27,7 +27,7 @@ class Pipe:
                 Pipe.PIPE_IMG_TOP = False 
                 Pipe.PIPE_IMG_BOTTOM = False
         self.x = WIDTH
-        self.gap_y = random.randint(150, HEIGHT - 150)
+        self.gap_y = random.randint(100, HEIGHT - FLOOR_HEIGHT - 100)
 
         # Top pipe
         self.top_rect = pygame.Rect(

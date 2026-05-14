@@ -28,11 +28,22 @@ class Game:
         # Load background
         base_path = os.path.join(os.path.dirname(__file__), "..", "assets", "images", "background")
         try:
-            self.background_img = pygame.image.load(os.path.join(base_path, "background.jpg")).convert()
+            self.background_img = pygame.image.load(os.path.join(base_path, "background-night.png")).convert()
             self.background_img = pygame.transform.scale(self.background_img, (WIDTH, HEIGHT))
         except Exception as e:
             print(f"Error loading background: {e}")
             self.background_img = None
+
+        # Load floor
+        self.floor_x = 0
+        base_path_obs = os.path.join(os.path.dirname(__file__), "..", "assets", "images", "obstacles")
+        try:
+            self.floor_img = pygame.image.load(os.path.join(base_path_obs, "floor.png")).convert_alpha()
+            # Scale floor to match WIDTH and FLOOR_HEIGHT
+            self.floor_img = pygame.transform.scale(self.floor_img, (WIDTH, FLOOR_HEIGHT))
+        except Exception as e:
+            print(f"Error loading floor: {e}")
+            self.floor_img = None
 
     def reset_game(self):
         self.player = Player()
@@ -46,7 +57,7 @@ class Game:
 
     def check_collision(self):
         # Floor / ceiling collision
-        if self.player.y < 0 or self.player.y > HEIGHT:
+        if self.player.y < 0 or self.player.y + PLAYER_HEIGHT > HEIGHT - FLOOR_HEIGHT:
             self.game_over = True
             self.player.is_dead = True
 
@@ -112,6 +123,11 @@ class Game:
                 self.check_collision()
                 self.update_score()
 
+                # Update floor scroll
+                self.floor_x -= PIPE_SPEED
+                if self.floor_x <= -WIDTH:
+                    self.floor_x = 0
+
             # Draw
             if self.background_img:
                 self.screen.blit(self.background_img, (0, 0))
@@ -122,6 +138,13 @@ class Game:
 
             for pipe in self.pipes:
                 pipe.draw(self.screen)
+
+            # Draw floor
+            if self.floor_img:
+                self.screen.blit(self.floor_img, (self.floor_x, HEIGHT - FLOOR_HEIGHT))
+                self.screen.blit(self.floor_img, (self.floor_x + WIDTH, HEIGHT - FLOOR_HEIGHT))
+            else:
+                pygame.draw.rect(self.screen, (150, 75, 0), (0, HEIGHT - FLOOR_HEIGHT, WIDTH, FLOOR_HEIGHT))
 
             draw_score(self.screen, self.score)
 
