@@ -1,5 +1,6 @@
+# pyrefly: ignore [missing-import]
 import pygame
-from settings import *
+from settings import *  
 from player import Player
 from pipe import Pipe
 from ui import draw_score, draw_game_over
@@ -35,6 +36,7 @@ class Game:
 
     def reset_game(self):
         self.player = Player()
+        self.player.is_dead = False
         self.pipes = []
 
         self.score = 0
@@ -46,6 +48,7 @@ class Game:
         # Floor / ceiling collision
         if self.player.y < 0 or self.player.y > HEIGHT:
             self.game_over = True
+            self.player.is_dead = True
 
         # Pipe collision
         for pipe in self.pipes:
@@ -55,6 +58,7 @@ class Game:
                 self.player.rect.colliderect(pipe.bottom_rect)
             ):
                 self.game_over = True
+                self.player.is_dead = True
 
     def update_score(self):
         for pipe in self.pipes:
