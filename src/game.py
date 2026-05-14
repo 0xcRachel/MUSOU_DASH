@@ -3,7 +3,7 @@ from settings import *
 from player import Player
 from pipe import Pipe
 from ui import draw_score, draw_game_over
-
+import os
 
 class Game:
     def __init__(self):
@@ -23,6 +23,15 @@ class Game:
         self.game_over = False
 
         self.spawn_timer = 0
+
+        # Load background
+        base_path = os.path.join(os.path.dirname(__file__), "..", "assets", "images", "background")
+        try:
+            self.background_img = pygame.image.load(os.path.join(base_path, "background.jpg")).convert()
+            self.background_img = pygame.transform.scale(self.background_img, (WIDTH, HEIGHT))
+        except Exception as e:
+            print(f"Error loading background: {e}")
+            self.background_img = None
 
     def reset_game(self):
         self.player = Player()
@@ -100,7 +109,10 @@ class Game:
                 self.update_score()
 
             # Draw
-            self.screen.fill(BACKGROUND_COLOR)
+            if self.background_img:
+                self.screen.blit(self.background_img, (0, 0))
+            else:
+                self.screen.fill(BACKGROUND_COLOR)
 
             self.player.draw(self.screen)
 
