@@ -46,6 +46,14 @@ class Pipe:
 
         self.passed = False
 
+        # Pre-scale images for this specific pipe instance to save performance
+        if isinstance(Pipe.PIPE_IMG_TOP, pygame.Surface) and isinstance(Pipe.PIPE_IMG_BOTTOM, pygame.Surface):
+            self.top_surface = pygame.transform.scale(Pipe.PIPE_IMG_TOP, (self.top_rect.width, self.top_rect.height))
+            self.bottom_surface = pygame.transform.scale(Pipe.PIPE_IMG_BOTTOM, (self.bottom_rect.width, self.bottom_rect.height))
+        else:
+            self.top_surface = None
+            self.bottom_surface = None
+
     def update(self):
         self.x -= PIPE_SPEED
 
@@ -53,14 +61,9 @@ class Pipe:
         self.bottom_rect.x = int(self.x)
 
     def draw(self, screen):
-        if isinstance(Pipe.PIPE_IMG_TOP, pygame.Surface) and isinstance(Pipe.PIPE_IMG_BOTTOM, pygame.Surface):
-            # Scale top pipe to its full rect height
-            top_img = pygame.transform.scale(Pipe.PIPE_IMG_TOP, (self.top_rect.width, self.top_rect.height))
-            screen.blit(top_img, self.top_rect)
-            
-            # Scale bottom pipe to its full rect height
-            bottom_img = pygame.transform.scale(Pipe.PIPE_IMG_BOTTOM, (self.bottom_rect.width, self.bottom_rect.height))
-            screen.blit(bottom_img, self.bottom_rect)
+        if self.top_surface and self.bottom_surface:
+            screen.blit(self.top_surface, self.top_rect)
+            screen.blit(self.bottom_surface, self.bottom_rect)
         else:
             pygame.draw.rect(screen, PIPE_COLOR, self.top_rect)
             pygame.draw.rect(screen, PIPE_COLOR, self.bottom_rect)
