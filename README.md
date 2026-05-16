@@ -1,5 +1,5 @@
 
-<img src="https://i.pinimg.com/736x/29/d2/d2/29d2d258c3da14a6c4b9a1604596987a.jpg" />
+<img src="./assets/thumbnail.png" />
 
 # Musou Dash
 
@@ -147,4 +147,8 @@ This project is for educational purposes, made by 0xcRachel
 ## Contributors
 <a href="https://github.com/0xcRachel/MUSOU_DASH/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=0xcRachel/MUSOU_DASH" />
+</a>
+
+<a href="https://www.anthropic.com/claude">
+  <img src="https://img.shields.io/badge/AI-Claude-orange">
 </a>
