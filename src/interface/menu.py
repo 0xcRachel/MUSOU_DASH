@@ -98,7 +98,7 @@ class Menu:
         )
         try:
             self.bg = pygame.image.load(
-                os.path.join(base_bg, "background.jpg")
+                os.path.join(base_bg, "background-night.png")
             ).convert()
             self.bg = pygame.transform.scale(self.bg, (WIDTH, HEIGHT))
         except Exception as e:
