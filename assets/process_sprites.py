@@ -1,3 +1,4 @@
+# pyrefly: ignore [missing-import]
 import cv2
 import numpy as np
 import os
@@ -62,10 +63,8 @@ def process_image(input_path, output_dir, bg_color=None, fuzz=30):
         # Pipes and decorations are solid (density > 100)
         # Text labels are sparse (density < 50)
         density = np.mean(roi[:, :, 3])
-        # Filter out text labels: they are usually < 30px tall and have lower density than solid objects
-        if h < 30 and density < 200:
-            continue
-        if density < 40: # General noise filter
+        # print(f"File: {os.path.basename(input_path)}, Part: {count}, Size: {w}x{h}, Density: {density:.2f}")
+        if density < 60: # Increased threshold
             continue
 
         filename = f"{os.path.splitext(os.path.basename(input_path))[0]}_{count:03d}.png"
